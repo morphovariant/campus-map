@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Campus Map</title>
+    <!--Get the jQuery library-->
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!-- Get the leaflet.js library and stylesheet -->
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <!-- Get the mapbox.js library and stylesheet -->
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
+    <!--Get the bootstrap library and stylesheet-->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.min.js"></script>
+    <!--Get the google maps library-->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRqyt_dwDdyhfG-AerwZdFVhtPrc-7QsU"></script>
+    <script type="text/javascript" src="js/map.js"></script>
+    <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+
+<div class="navbar navbar-default">
+    <div class="container-fluid">
+
+                <a class="navbar-brand initialism" href="#">ATO</a>
+
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-map-marker"></span>
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Food</a></li>
+                            <li><a href="#">Parking</a></li>
+                            <li><a href="#">Visitor's Center</a></li>
+                            <li><a href="#">Tech Support</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="input-group">
+                        <form class="navbar-form" role="search">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Find Building...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+
+    </div><!-- /end nav container -->
+</div>
+
+
+<!--<div class="container-fluid map-div">-->
+
+    <div id="map-canvas" style="height: 510px"></div>
+
+    <!--<script>-->
+        <!--drawMap();-->
+    <!--</script>-->
+
+<!--</div>&lt;!&ndash;end map container&ndash;&gt;-->
+
+
+<!--<script>-->
+    <!--$(window).resize(function() {-->
+        <!--vpHeight = $(window).height() - 50px;-->
+        <!--$('#map-canvas').css('height', vpHeight);-->
+    <!--});-->
+<!--</script>-->
+</body>
+</html>

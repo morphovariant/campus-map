@@ -1,0 +1,35 @@
+
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+
+li.input-group {
+    width: 225px;
+}
+
+input.form-control, .input-group .form-control {
+    width: 150px;
+}
+
+.navbar {
+    margin-bottom: 8px;
+}
+
+.map-div .container-fluid {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: @screen-sm-min) {
+
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: @screen-md-min) {
+
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: @screen-lg-min) {
+
+}
