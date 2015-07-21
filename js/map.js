@@ -1,23 +1,5 @@
 //global variables
-var drawMap;
-var map;
-var vpHeight;
 
-//drawMap = function initialize() {
-//
-//    vpHeight = $(window).height();
-//
-//    var mapOptions = {
-//        center: new google.maps.LatLng(34.189956, -118.918591),
-//        zoom: 16
-//    };
-//    map = new google.maps.Map(document.getElementById('map-canvas'),
-//        mapOptions);
-//
-//    $('#map-canvas').css('height', vpHeight);
-//};
-
-google.maps.event.addDomListener(window, 'load', initialize);
 
 // This example creates a custom overlay called ATOOverlay, containing
 // a U.S. Geological Survey (USGS) image of the relevant area on the map.
@@ -27,19 +9,50 @@ google.maps.event.addDomListener(window, 'load', initialize);
 // Note that we set the prototype to an instance, rather than the
 // parent class itself, because we do not wish to modify the parent class.
 
-var overlay;
+var map;
+var imgOverlay;
 ATOOverlay.prototype = new google.maps.OverlayView();
 
 // Initialize the map and the custom overlay.
 
+var infowindow;
+
+(function () {
+
+    //create an array of markers
+    google.maps.Map.prototype.markers = new Array();
+
+    //adds a new marker to the array
+    google.maps.Map.prototype.addMarker = function(marker) {
+        this.markers[this.markers.length] = marker;
+    };
+
+    //returns markers in the array
+    google.maps.Map.prototype.getMarkers = function() {
+        return this.markers
+    };
+
+    //closes infowindows
+    google.maps.Map.prototype.clearMarkers = function() {
+        if(infowindow) {
+            infowindow.close();
+        }
+
+        for(var i=0; i<this.markers.length; i++){
+            this.markers[i].set_map(null);
+        }
+    };
+})();
+
 function initialize() {
     var mapOptions = {
         zoom: 16,
-        center: new google.maps.LatLng(34.18994703, -118.92183252),
+        //center: new google.maps.LatLng(34.18994703, -118.92183252),
         mapTypeId: google.maps.MapTypeId.ROADMAP
+        //mapTypeId: google.maps.MapTypeId.SATELLITE
     };
 
-    var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
     var swBound = new google.maps.LatLng(34.18605509, -118.92949732);
     var neBound = new google.maps.LatLng(34.20193861, -118.91595312);
@@ -50,8 +63,56 @@ function initialize() {
 
     // The custom ATOOverlay object contains the USGS image,
     // the bounds of the image, and a reference to the map.
-    overlay = new ATOOverlay(bounds, srcImage, map);
+    imgOverlay = new ATOOverlay(bounds, srcImage, map);
+
+    d3.csv("data/data.csv", function(d) {
+
+        data = d;
+
+        buildInfoWindows();
+
+    });
+
+    // Try HTML5 geolocation
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = new google.maps.LatLng(position.coords.latitude,
+                position.coords.longitude);
+
+            var image = 'img/you-are-here.png';
+            var hereMarker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                icon: image
+            });
+
+            map.setCenter(pos);
+        }, function() {
+            handleNoGeolocation(true);
+        });
+    } else {
+        // Browser doesn't support Geolocation
+        handleNoGeolocation(false);
+    }
 }
+
+function handleNoGeolocation(errorFlag) {
+    //if (errorFlag) {
+    //    var content = 'Error: The Geolocation service failed.';
+    //} else {
+    //    var content = 'Error: Your browser doesn\'t support geolocation.';
+    //}
+
+    var options = {
+        map: map,
+        position: new google.maps.LatLng(34.18994703, -118.92183252),
+        //content: content
+    };
+
+    map.setCenter(options.position);
+
+
+} //end initialize function
 
 /** @constructor */
 function ATOOverlay(bounds, image, map) {
@@ -124,6 +185,104 @@ ATOOverlay.prototype.onRemove = function() {
     this.div_ = null;
 };
 
+// parses the source csv file into a js object
+
+var data;
+
+
+// parse the building data file and add one infowindow on click for each building
+var buildInfoWindows = function() {
+
+    data.forEach(function(d) {
+
+        //console.log(d);
+
+        var bldgData = '<div><h3>Building: ' + d.building + '</h3>';
+
+        //if (d.visitor) {
+        //    bldgData += "<p>Vistor's Center</p>";
+        //}
+
+        if (d.fitness) {
+            bldgData += '<h4>' + d.fitness + '</a></h4><p>'
+                + d.fitnessHours + '</p>';
+        }
+
+        if (d.dining) {
+            bldgData += '<h4><a href="' + d.diningUrl + '">' + d.dining + '</a></h4><p>'
+            + d.diningHours + '</p>';
+        }
+
+        if (d.serviceGift) {
+            bldgData += '<h4>' + d.serviceGift + '</a></h4><p>'
+                + d.serviceGiftHours + '</p>';
+        }
+
+        if (d.serviceDryClean) {
+            bldgData += '<h4><a href="' + d.serviceDryCleanUrl + '">' + d.serviceDryClean + '</a></h4>';
+        }
+
+        if (d.serviceShoe) {
+            bldgData += '<h4><a href="' + d.serviceShoeUrl + '">' + d.serviceShoe + '</a></h4>';
+        }
+
+        if (d.serviceCarWash) {
+            bldgData += '<h4><a href="' + d.serviceCarWashUrl + '">' + d.serviceCarWash + '</a></h4><p>'
+                + d.serviceCarWashHours + '</p>';
+        }
+
+        bldgData += '</div>';
+        var bldgCenter = new google.maps.LatLng(d.lat, d.lng);
+        var bldgRadius = +d.rad;
+
+
+
+
+        //var infowindow = new google.maps.InfoWindow({
+        //    content: bldgData,
+        //    maxWidth: 200
+        //});
+
+        var circleOptions = {
+            strokeColor: '#ec9522',
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            fillColor: 'ffffff',
+            fillOpacity: 0,
+            map: map,
+            center: bldgCenter,
+            //center:{lat:100, lng:100},
+            radius: bldgRadius
+        };
+
+        map.addMarker(createMarker(bldgData, circleOptions));
+
+        // Add the circle to the map
+        //var bldgCircle = new google.maps.Circle(circleOptions);
+        //google.maps.event.addListener(bldgCircle, 'click', function(e) {
+        //    infowindow.setPosition(bldgCircle.getCenter());
+        //    infowindow.open(map);
+        //});
+
+    }); //end forEach
+
+}; //end of buildContent custom function
+
+//function wrapper test
+var createMarker = function(bldgData, circleOptions) {
+
+    // Add the circle to the map
+    var bldgCircle = new google.maps.Circle(circleOptions);
+    google.maps.event.addListener(bldgCircle, 'click', function(e) {
+        if (infowindow) infowindow.close();
+        infowindow = new google.maps.InfoWindow({
+            content: bldgData,
+            maxWidth: 200
+        });
+        infowindow.setPosition(bldgCircle.getCenter());
+        infowindow.open(map);
+    });
+    return bldgCircle;
+}
+
 google.maps.event.addDomListener(window, 'load', initialize);
-
-

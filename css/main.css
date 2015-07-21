@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
+
 
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
@@ -17,6 +19,24 @@ input.form-control, .input-group .form-control {
 .map-div .container-fluid {
     padding-left: 8px;
     padding-right: 8px;
+}
+
+body {
+    font-family: 'Open Sans', "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 400;
+}
+
+h3 {
+    font-family: 'Open Sans', "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 300;
+    margin-top: 10px;
+}
+
+h4 {
+    font-family: 'Open Sans', "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    margin-top: 15px;
 }
 
 /* Small devices (tablets, 768px and up) */
