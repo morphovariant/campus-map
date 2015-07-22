@@ -35,21 +35,31 @@
                             <!--<li><a href="#">Services</a></li>-->
                             <!--<li><a href="#">Parking</a></li>-->
                         <!--</ul>-->
-                        <ul class="dropdown-menu checkbox" onchange="filterMarkers(this.value);">
-                            <li><label><input type="checkbox" value="visitor">
+                        <ul class="dropdown-menu checkbox" id="filters">
+
+                            <li><label><input type="checkbox" value="visitor" class="visOff" onchange="togVis()">
                                 Visitor's Center</label></li>
+
                             <li role="separator" class="divider"></li>
-                            <li><label><input type="checkbox" value="fitness">
+
+                            <li><label><input type="checkbox" value="fitness" class="fitOff" onchange="togFit()">
                                 Fitness Center</label></li>
+
                             <li role="separator" class="divider"></li>
-                            <li><label><input type="checkbox" value="dining">
+
+                            <li><label><input type="checkbox" value="dining" class="dinOff" onchange="togDin()">
                                 Dining</label></li>
+
                             <li role="separator" class="divider"></li>
-                            <li><label><input type="checkbox" value="services">
+
+                            <li><label><input type="checkbox" value="services" class="svcOff" onchange="togSvc()">
                                 Services</label></li>
+
                             <li role="separator" class="divider"></li>
-                            <li><label><input type="checkbox" value="parking">
+
+                            <li><label><input type="checkbox" value="parking" class="prkOff" onchange="togPrk()">
                                 Parking</label></li>
+
                         </ul>
                     </li>
                 </ul>

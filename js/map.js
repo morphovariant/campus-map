@@ -181,7 +181,11 @@ ATOOverlay.prototype.onRemove = function() {
 };
 
 // object storage for filter-based markers
-var filterMarks = [];
+var visitorMarks = [];
+var fitnessMarks = [];
+var diningMarks = [];
+var serviceMarks = [];
+var parkingMarks = [];
 
 // parse the building data file and add one infowindow on click for each building
 var buildInfoWindows = function() {
@@ -192,27 +196,71 @@ var buildInfoWindows = function() {
 
         var bldgCenter = new google.maps.LatLng(d.lat, d.lng);
         var bldgRadius = +d.rad;
+
         var bldgData = '<div><h3>Building: ' + d.building + '</h3>';
 
         if (d.visitor) {
-            //bldgData += "<p>Vistor's Center</p>";
-            filterMarks.push(['visitor', '#d34e2e', bldgCenter, bldgRadius]);
+            var visitorOptions = {
+                strokeColor: '#d34e2e',
+                strokeOpacity: 0,
+                strokeWeight: 8,
+                fillColor: 'ffffff',
+                fillOpacity: 0,
+                map: map,
+                center: bldgCenter,
+                radius: bldgRadius
+            };
+            var visitorCircle = new google.maps.Circle(visitorOptions);
+            visitorMarks.push(visitorCircle);
         }
 
         if (d.fitness) {
             bldgData += '<h4>Amgym</h4><p>'
                 + d.fitnessHours + '</p>';
-            filterMarks.push(['fitness', '#ec9522', bldgCenter, bldgRadius]);
+            var fitnessOptions = {
+                strokeColor: '#ec9522',
+                strokeOpacity: 0,
+                strokeWeight: 8,
+                fillColor: 'ffffff',
+                fillOpacity: 0,
+                map: map,
+                center: bldgCenter,
+                radius: bldgRadius
+            };
+            var fitnessCircle = new google.maps.Circle(fitnessOptions);
+            fitnessMarks.push(fitnessCircle);
         }
 
         if (d.dining) {
             bldgData += '<h4><a href="' + d.diningUrl + '">' + d.dining + '</a></h4><p>'
-            + d.diningHours + '</p>';
-            filterMarks.push(['dining', '#f1c018', bldgCenter, bldgRadius]);
+                + d.diningHours + '</p>';
+            var diningOptions = {
+                strokeColor: '#f1c018',
+                strokeOpacity: 0,
+                strokeWeight: 8,
+                fillColor: 'ffffff',
+                fillOpacity: 0,
+                map: map,
+                center: bldgCenter,
+                radius: bldgRadius + 12
+            };
+            var diningCircle = new google.maps.Circle(diningOptions);
+            diningMarks.push(diningCircle);
         }
 
         if (d.services) {
-            filterMarks.push(['services', '#2bbbb5', bldgCenter, bldgRadius]);
+            var serviceOptions = {
+                strokeColor: '#2bbbb5',
+                strokeOpacity: 0,
+                strokeWeight: 8,
+                fillColor: 'ffffff',
+                fillOpacity: 0,
+                map: map,
+                center: bldgCenter,
+                radius: bldgRadius
+            };
+            var serviceCircle = new google.maps.Circle(serviceOptions);
+            serviceMarks.push(serviceCircle);
         }
 
         if (d.serviceGift) {
@@ -234,15 +282,21 @@ var buildInfoWindows = function() {
         }
 
         if (d.parking) {
-            filterMarks.push(['parking', '#804b9d', bldgCenter, bldgRadius]);
+            var parkingOptions = {
+                strokeColor: '#804b9d',
+                strokeOpacity: 0,
+                strokeWeight: 8,
+                fillColor: 'ffffff',
+                fillOpacity: 0,
+                map: map,
+                center: bldgCenter,
+                radius: bldgRadius - 12
+            };
+            var parkingCircle = new google.maps.Circle(parkingOptions);
+            parkingMarks.push(parkingCircle);
         }
 
         bldgData += '</div>';
-
-        //var infowindow = new google.maps.InfoWindow({
-        //    content: bldgData,
-        //    maxWidth: 200
-        //});
 
         var circleOptions = {
             strokeColor: '#ec9522',
@@ -252,20 +306,11 @@ var buildInfoWindows = function() {
             fillOpacity: 0,
             map: map,
             center: bldgCenter,
-            //center:{lat:100, lng:100},
             radius: bldgRadius
         };
 
+        //adds invisible circles that trigger infoWindows
         map.addMarker(bldgMarker(bldgData, circleOptions));
-
-        showCircles(filterMarks);
-
-        // Add the circle to the map
-        //var bldgCircle = new google.maps.Circle(circleOptions);
-        //google.maps.event.addListener(bldgCircle, 'click', function(e) {
-        //    infowindow.setPosition(bldgCircle.getCenter());
-        //    infowindow.open(map);
-        //});
 
     }); //end forEach
 
@@ -289,39 +334,87 @@ var bldgMarker = function(bldgData, circleOptions) {
     return bldgCircle;
 };
 
-// creates and adds the circle
-var showCircles = function(marker) {
-    var cat = marker[0];
-    var pos = marker[2];
-    var rad = marker[3];
-    var rgb = marker[1];
 
-    var filterOptions = {
-        strokeColor: rgb,
-        strokeOpacity: 0.6,
-        strokeWeight: 8,
-        fillOpacity: 0,
-        map: map,
-        center: pos,
-        radius: rad,
-        category: cat
-    };
+togVis = function() {
 
-    var circle = new google.maps.Circle(filterOptions);
-
-    map.addCircle(circle);
-
-};
-
-filterMarkers = function(category) {
-    for (i = 0; i < circles.length; i++) {
-        circ = circles[i];
-        if (circ.category == category || category.length === 0) {
-            circ.setVisible(true);
-        } else {
-            circ.setVisible(false);
+    if ( $('input').hasClass('visOff') ) {
+        $('input').removeClass('visOff').addClass('visOn');
+        for (i = 0; i < visitorMarks.length; i++) {
+            visitorMarks[i].setOptions({strokeOpacity: 0.6});
+        }
+    } else {
+        $('input').addClass('visOff').removeClass('visOn');
+        for (i = 0; i < visitorMarks.length; i++) {
+            visitorMarks[i].setOptions({strokeOpacity: 0});
         }
     }
+
 };
+
+togFit = function() {
+
+    if ( $('input').hasClass('fitOff') ) {
+        $('input').removeClass('fitOff').addClass('fitOn');
+        for (i = 0; i < fitnessMarks.length; i++) {
+            fitnessMarks[i].setOptions({strokeOpacity: 0.6});
+        }
+    } else {
+        $('input').addClass('fitOff').removeClass('fitOn');
+        for (i = 0; i < fitnessMarks.length; i++) {
+            fitnessMarks[i].setOptions({strokeOpacity: 0});
+        }
+    }
+
+};
+
+togDin = function() {
+
+    if ( $('input').hasClass('dinOff') ) {
+        $('input').removeClass('dinOff').addClass('dinOn');
+        for (i = 0; i < diningMarks.length; i++) {
+            diningMarks[i].setOptions({strokeOpacity: 0.6});
+        }
+    } else {
+        $('input').addClass('dinOff').removeClass('dinOn');
+        for (i = 0; i < diningMarks.length; i++) {
+            diningMarks[i].setOptions({strokeOpacity: 0});
+        }
+    }
+
+};
+
+togSvc = function() {
+
+    if ( $('input').hasClass('svcOff') ) {
+        $('input').removeClass('svcOff').addClass('svcOn');
+        for (i = 0; i < serviceMarks.length; i++) {
+            serviceMarks[i].setOptions({strokeOpacity: 0.6});
+        }
+    } else {
+        $('input').addClass('svcOff').removeClass('svcOn');
+        for (i = 0; i < serviceMarks.length; i++) {
+            serviceMarks[i].setOptions({strokeOpacity: 0});
+        }
+    }
+
+};
+
+togPrk = function() {
+
+    if ( $('input').hasClass('prkOff') ) {
+        $('input').removeClass('prkOff').addClass('prkOn');
+        for (i = 0; i < parkingMarks.length; i++) {
+            parkingMarks[i].setOptions({strokeOpacity: 0.6});
+        }
+    } else {
+        $('input').addClass('prkOff').removeClass('prkOn');
+        for (i = 0; i < parkingMarks.length; i++) {
+            parkingMarks[i].setOptions({strokeOpacity: 0});
+        }
+    }
+
+};
+
+
 
 google.maps.event.addDomListener(window, 'load', initialize);
