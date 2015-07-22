@@ -208,7 +208,7 @@ var buildInfoWindows = function() {
             bldgData += '<h4>Amgym</h4><p>'
                 + d.fitnessHours + '</p>';
             var fitnessOptions = {
-                strokeColor: '#ec9522',
+                strokeColor: '#804b9d',
                 strokeOpacity: 0,
                 strokeWeight: 8,
                 fillColor: 'ffffff',
@@ -225,7 +225,7 @@ var buildInfoWindows = function() {
             bldgData += '<h4><a href="' + d.diningUrl + '">' + d.dining + '</a></h4><p>'
                 + d.diningHours + '</p>';
             var diningOptions = {
-                strokeColor: '#f1c018',
+                strokeColor: '#00bbe3',
                 strokeOpacity: 0,
                 strokeWeight: 8,
                 fillColor: 'ffffff',
@@ -240,7 +240,7 @@ var buildInfoWindows = function() {
 
         if (d.services) {
             var serviceOptions = {
-                strokeColor: '#2bbbb5',
+                strokeColor: '#f1c018',
                 strokeOpacity: 0,
                 strokeWeight: 8,
                 fillColor: 'ffffff',
@@ -273,7 +273,7 @@ var buildInfoWindows = function() {
 
         if (d.parking) {
             var parkingOptions = {
-                strokeColor: '#804b9d',
+                strokeColor: '#87c665',
                 strokeOpacity: 0,
                 strokeWeight: 8,
                 fillColor: 'ffffff',
@@ -331,13 +331,15 @@ $(function() {
     });
 });
 
+
 findBldg = function() {
     // get all the inputs into an array.
     var input = $('#bldgs').val();
 
     for (i = 0; i < map.markers.length; i++) {
         if (input == map.markers[i].bldg) {
-            map.markers[i].setOptions({strokeOpacity: 0.6})
+            map.markers[i].setOptions({strokeOpacity: 0.6});
+            map.panTo(map.markers[i].getCenter());
         } else {
             map.markers[i].setOptions({strokeOpacity: 0})
         }

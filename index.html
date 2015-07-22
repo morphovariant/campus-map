@@ -30,37 +30,51 @@
                             <span class="glyphicon glyphicon-map-marker"></span>
                             <span class="caret"></span>
                         </a>
-                        <!--<ul class="dropdown-menu">-->
-                            <!--<li><a href="#">Visitor's Center</a></li>-->
-                            <!--<li><a href="#">Fitness Center</a></li>-->
-                            <!--<li><a href="#">Dining</a></li>-->
-                            <!--<li><a href="#">Services</a></li>-->
-                            <!--<li><a href="#">Parking</a></li>-->
-                        <!--</ul>-->
+
+                        <!--<svg width="28" height="22">-->
+                            <!--<rect width="4" height="22" fill="#85BB22" style="opacity:1" />-->
+                            <!--<rect width="22" height="22" x="7" y="0" fill="#85BB22" style="opacity:0.{{n.popularity}}" />-->
+                        <!--</svg>-->
+
                         <ul class="dropdown-menu checkbox" id="filters">
 
                             <li><label><input type="checkbox" value="visitor" class="visOff" onchange="togVis()">
-                                Visitor's Center</label></li>
+                                <svg width="10" height="10">
+                                    <circle r="3" cx="5" cy="5" stroke="#d34e2e" stroke-width="3" stroke-opacity="0.6" fill-opacity="0"></circle>
+                                </svg>
+                                 Visitor's Center</label></li>
 
                             <li role="separator" class="divider"></li>
 
                             <li><label><input type="checkbox" value="fitness" class="fitOff" onchange="togFit()">
-                                Fitness Center</label></li>
+                                <svg width="10" height="10">
+                                    <circle r="3" cx="5" cy="5" stroke="#804b9d" stroke-width="3" stroke-opacity="0.6" fill-opacity="0"></circle>
+                                </svg>
+                                 Fitness Center</label></li>
 
                             <li role="separator" class="divider"></li>
 
                             <li><label><input type="checkbox" value="dining" class="dinOff" onchange="togDin()">
-                                Dining</label></li>
+                                <svg width="10" height="10">
+                                    <circle r="3" cx="5" cy="5" stroke="#00bbe3" stroke-width="3" stroke-opacity="0.6" fill-opacity="0"></circle>
+                                </svg>
+                                 Dining</label></li>
 
                             <li role="separator" class="divider"></li>
 
                             <li><label><input type="checkbox" value="services" class="svcOff" onchange="togSvc()">
-                                Services</label></li>
+                                <svg width="10" height="10">
+                                    <circle r="3" cx="5" cy="5" stroke="#f1c018" stroke-width="3" stroke-opacity="0.6" fill-opacity="0"></circle>
+                                </svg>
+                                 Services</label></li>
 
                             <li role="separator" class="divider"></li>
 
                             <li><label><input type="checkbox" value="parking" class="prkOff" onchange="togPrk()">
-                                Parking</label></li>
+                                <svg width="10" height="10">
+                                    <circle r="3" cx="5" cy="5" stroke="#87c665" stroke-width="3" stroke-opacity="0.6" fill-opacity="0"></circle>
+                                </svg>
+                                 Parking</label></li>
 
                         </ul>
                     </li>
@@ -70,7 +84,7 @@
                     <li class="input-group">
                         <form class="navbar-form" role="search">
                             <div class="form-group">
-                                <input type="text" id="bldgs" class="form-control" placeholder="Find Building...">
+                                <input type="search" id="bldgs" class="form-control" placeholder="Find Building...">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="button" id="findBldgs" onclick="findBldg()">
                                         <span class="glyphicon glyphicon-search"></span>
