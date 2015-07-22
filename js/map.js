@@ -33,18 +33,6 @@ ATOOverlay.prototype = new google.maps.OverlayView();
         }
     };
 
-    //create an array of filterable markers
-    google.maps.Map.prototype.circles = [];
-
-    //adds a new filterable marker to the array
-    google.maps.Map.prototype.addCircle = function(circle) {
-        this.circles[this.circles.length] = circle;
-    };
-
-    //returns filterable markers in the array
-    google.maps.Map.prototype.getCircles = function() {
-        return this.circles
-    };
 })();
 
 // Initialize the map and the custom overlay.
@@ -186,6 +174,7 @@ var fitnessMarks = [];
 var diningMarks = [];
 var serviceMarks = [];
 var parkingMarks = [];
+var bldgNames = [];
 
 // parse the building data file and add one infowindow on click for each building
 var buildInfoWindows = function() {
@@ -193,11 +182,12 @@ var buildInfoWindows = function() {
     data.forEach(function(d) {
 
         //console.log(d);
-
+        var bldgName = d.building;
+        bldgNames.push(bldgName);
         var bldgCenter = new google.maps.LatLng(d.lat, d.lng);
         var bldgRadius = +d.rad;
 
-        var bldgData = '<div><h3>Building: ' + d.building + '</h3>';
+        var bldgData = '<div><h3>Building: ' + bldgName + '</h3>';
 
         if (d.visitor) {
             var visitorOptions = {
@@ -301,12 +291,13 @@ var buildInfoWindows = function() {
         var circleOptions = {
             strokeColor: '#ec9522',
             strokeOpacity: 0,
-            strokeWeight: 2,
+            strokeWeight: 10,
             fillColor: 'ffffff',
             fillOpacity: 0,
             map: map,
             center: bldgCenter,
-            radius: bldgRadius
+            radius: bldgRadius,
+            bldg: bldgName
         };
 
         //adds invisible circles that trigger infoWindows
@@ -334,6 +325,25 @@ var bldgMarker = function(bldgData, circleOptions) {
     return bldgCircle;
 };
 
+$(function() {
+    $( "#bldgs" ).autocomplete({
+        source: bldgNames
+    });
+});
+
+findBldg = function() {
+    // get all the inputs into an array.
+    var input = $('#bldgs').val();
+
+    for (i = 0; i < map.markers.length; i++) {
+        if (input == map.markers[i].bldg) {
+            map.markers[i].setOptions({strokeOpacity: 0.6})
+        } else {
+            map.markers[i].setOptions({strokeOpacity: 0})
+        }
+    }
+
+};
 
 togVis = function() {
 

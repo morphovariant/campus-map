@@ -5,6 +5,8 @@
     <title>Campus Map</title>
     <!--Get the jQuery library-->
     <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <!--Get the bootstrap library and stylesheet-->
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <script src="js/bootstrap.min.js"></script>
@@ -68,9 +70,9 @@
                     <li class="input-group">
                         <form class="navbar-form" role="search">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Find Building...">
+                                <input type="text" id="bldgs" class="form-control" placeholder="Find Building...">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
+                                    <button class="btn btn-default" type="button" id="findBldgs" onclick="findBldg()">
                                         <span class="glyphicon glyphicon-search"></span>
                                     </button>
                                 </span>
@@ -82,17 +84,7 @@
     </div><!-- /end nav container -->
 </div>
 
-
-<!--<div class="container-fluid map-div">-->
-
-    <div id="map-canvas" style="height: 510px"></div>
-
-    <!--<script>-->
-        <!--drawMap();-->
-    <!--</script>-->
-
-<!--</div>&lt;!&ndash;end map container&ndash;&gt;-->
-
+<div id="map-canvas" style="height: 510px"></div>
 
 <!--<script>-->
     <!--$(window).resize(function() {-->
@@ -100,5 +92,6 @@
         <!--$('#map-canvas').css('height', vpHeight);-->
     <!--});-->
 <!--</script>-->
+
 </body>
 </html>
