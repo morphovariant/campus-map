@@ -1,26 +1,16 @@
 //global variables
 
-
-// This example creates a custom overlay called ATOOverlay, containing
-// a U.S. Geological Survey (USGS) image of the relevant area on the map.
-
-// Set the custom overlay object's prototype to a new instance
-// of OverlayView. In effect, this will subclass the overlay class.
-// Note that we set the prototype to an instance, rather than the
-// parent class itself, because we do not wish to modify the parent class.
-
 var map;
+var data;
 var imgOverlay;
-ATOOverlay.prototype = new google.maps.OverlayView();
-
-// Initialize the map and the custom overlay.
-
 var infowindow;
+
+ATOOverlay.prototype = new google.maps.OverlayView();
 
 (function () {
 
     //create an array of markers
-    google.maps.Map.prototype.markers = new Array();
+    google.maps.Map.prototype.markers = [];
 
     //adds a new marker to the array
     google.maps.Map.prototype.addMarker = function(marker) {
@@ -38,81 +28,86 @@ var infowindow;
             infowindow.close();
         }
 
-        for(var i=0; i<this.markers.length; i++){
+        for(var i = 0; i < this.markers.length; i++){
             this.markers[i].set_map(null);
         }
     };
+
+    //create an array of filterable markers
+    google.maps.Map.prototype.circles = [];
+
+    //adds a new filterable marker to the array
+    google.maps.Map.prototype.addCircle = function(circle) {
+        this.circles[this.circles.length] = circle;
+    };
+
+    //returns filterable markers in the array
+    google.maps.Map.prototype.getCircles = function() {
+        return this.circles
+    };
 })();
 
+// Initialize the map and the custom overlay.
 function initialize() {
+
     var mapOptions = {
         zoom: 16,
-        //center: new google.maps.LatLng(34.18994703, -118.92183252),
+        center: new google.maps.LatLng(34.18994703, -118.92183252),
         mapTypeId: google.maps.MapTypeId.ROADMAP
-        //mapTypeId: google.maps.MapTypeId.SATELLITE
     };
 
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
+    // overlay img and positioning
     var swBound = new google.maps.LatLng(34.18605509, -118.92949732);
     var neBound = new google.maps.LatLng(34.20193861, -118.91595312);
     var bounds = new google.maps.LatLngBounds(swBound, neBound);
-
-    // The photograph is courtesy of the U.S. Geological Survey.
-    var srcImage = 'img/ato-site-map.png';
-
-    // The custom ATOOverlay object contains the USGS image,
-    // the bounds of the image, and a reference to the map.
+    var srcImage = 'img/ato-site-map-new.png';
     imgOverlay = new ATOOverlay(bounds, srcImage, map);
 
+    // building data
     d3.csv("data/data.csv", function(d) {
 
         data = d;
-
         buildInfoWindows();
 
     });
 
-    // Try HTML5 geolocation
-    if(navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = new google.maps.LatLng(position.coords.latitude,
-                position.coords.longitude);
-
-            var image = 'img/you-are-here.png';
-            var hereMarker = new google.maps.Marker({
-                position: pos,
-                map: map,
-                icon: image
-            });
-
-            map.setCenter(pos);
-        }, function() {
-            handleNoGeolocation(true);
-        });
-    } else {
-        // Browser doesn't support Geolocation
-        handleNoGeolocation(false);
-    }
-}
-
-function handleNoGeolocation(errorFlag) {
-    //if (errorFlag) {
-    //    var content = 'Error: The Geolocation service failed.';
+    // HTML5 geolocation
+    //if(navigator.geolocation) {
+    //    navigator.geolocation.getCurrentPosition(function(position) {
+    //        var pos = new google.maps.LatLng(position.coords.latitude,
+    //            position.coords.longitude);
+    //
+    //        var image = 'img/you-are-here.png';
+    //        var hereMarker = new google.maps.Marker({
+    //            position: pos,
+    //            map: map,
+    //            icon: image
+    //        });
+    //
+    //        map.setCenter(pos);
+    //    }, function() {
+    //        handleNoGeolocation(true);
+    //    });
     //} else {
-    //    var content = 'Error: Your browser doesn\'t support geolocation.';
+    //    // Browser doesn't support Geolocation
+    //    handleNoGeolocation(false);
     //}
-
-    var options = {
-        map: map,
-        position: new google.maps.LatLng(34.18994703, -118.92183252),
-        //content: content
-    };
-
-    map.setCenter(options.position);
-
-
 } //end initialize function
+
+// sets the location without loc svcs
+//function handleNoGeolocation(errorFlag) {
+//
+//    var options = {
+//        map: map,
+//        position: new google.maps.LatLng(34.18994703, -118.92183252),
+//        //content: content
+//    };
+//
+//    map.setCenter(options.position);
+//
+//} // end no location
 
 /** @constructor */
 function ATOOverlay(bounds, image, map) {
@@ -185,10 +180,8 @@ ATOOverlay.prototype.onRemove = function() {
     this.div_ = null;
 };
 
-// parses the source csv file into a js object
-
-var data;
-
+// object storage for filter-based markers
+var filterMarks = [];
 
 // parse the building data file and add one infowindow on click for each building
 var buildInfoWindows = function() {
@@ -197,20 +190,29 @@ var buildInfoWindows = function() {
 
         //console.log(d);
 
+        var bldgCenter = new google.maps.LatLng(d.lat, d.lng);
+        var bldgRadius = +d.rad;
         var bldgData = '<div><h3>Building: ' + d.building + '</h3>';
 
-        //if (d.visitor) {
-        //    bldgData += "<p>Vistor's Center</p>";
-        //}
+        if (d.visitor) {
+            //bldgData += "<p>Vistor's Center</p>";
+            filterMarks.push(['visitor', '#d34e2e', bldgCenter, bldgRadius]);
+        }
 
         if (d.fitness) {
-            bldgData += '<h4>' + d.fitness + '</a></h4><p>'
+            bldgData += '<h4>Amgym</h4><p>'
                 + d.fitnessHours + '</p>';
+            filterMarks.push(['fitness', '#ec9522', bldgCenter, bldgRadius]);
         }
 
         if (d.dining) {
             bldgData += '<h4><a href="' + d.diningUrl + '">' + d.dining + '</a></h4><p>'
             + d.diningHours + '</p>';
+            filterMarks.push(['dining', '#f1c018', bldgCenter, bldgRadius]);
+        }
+
+        if (d.services) {
+            filterMarks.push(['services', '#2bbbb5', bldgCenter, bldgRadius]);
         }
 
         if (d.serviceGift) {
@@ -231,12 +233,11 @@ var buildInfoWindows = function() {
                 + d.serviceCarWashHours + '</p>';
         }
 
+        if (d.parking) {
+            filterMarks.push(['parking', '#804b9d', bldgCenter, bldgRadius]);
+        }
+
         bldgData += '</div>';
-        var bldgCenter = new google.maps.LatLng(d.lat, d.lng);
-        var bldgRadius = +d.rad;
-
-
-
 
         //var infowindow = new google.maps.InfoWindow({
         //    content: bldgData,
@@ -245,7 +246,7 @@ var buildInfoWindows = function() {
 
         var circleOptions = {
             strokeColor: '#ec9522',
-            strokeOpacity: 1,
+            strokeOpacity: 0,
             strokeWeight: 2,
             fillColor: 'ffffff',
             fillOpacity: 0,
@@ -255,7 +256,9 @@ var buildInfoWindows = function() {
             radius: bldgRadius
         };
 
-        map.addMarker(createMarker(bldgData, circleOptions));
+        map.addMarker(bldgMarker(bldgData, circleOptions));
+
+        showCircles(filterMarks);
 
         // Add the circle to the map
         //var bldgCircle = new google.maps.Circle(circleOptions);
@@ -268,8 +271,9 @@ var buildInfoWindows = function() {
 
 }; //end of buildContent custom function
 
-//function wrapper test
-var createMarker = function(bldgData, circleOptions) {
+// creates and returns the circle
+// adds a listener for a tap to launch the infoWindow
+var bldgMarker = function(bldgData, circleOptions) {
 
     // Add the circle to the map
     var bldgCircle = new google.maps.Circle(circleOptions);
@@ -283,6 +287,41 @@ var createMarker = function(bldgData, circleOptions) {
         infowindow.open(map);
     });
     return bldgCircle;
-}
+};
+
+// creates and adds the circle
+var showCircles = function(marker) {
+    var cat = marker[0];
+    var pos = marker[2];
+    var rad = marker[3];
+    var rgb = marker[1];
+
+    var filterOptions = {
+        strokeColor: rgb,
+        strokeOpacity: 0.6,
+        strokeWeight: 8,
+        fillOpacity: 0,
+        map: map,
+        center: pos,
+        radius: rad,
+        category: cat
+    };
+
+    var circle = new google.maps.Circle(filterOptions);
+
+    map.addCircle(circle);
+
+};
+
+filterMarkers = function(category) {
+    for (i = 0; i < circles.length; i++) {
+        circ = circles[i];
+        if (circ.category == category || category.length === 0) {
+            circ.setVisible(true);
+        } else {
+            circ.setVisible(false);
+        }
+    }
+};
 
 google.maps.event.addDomListener(window, 'load', initialize);

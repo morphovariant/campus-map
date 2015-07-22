@@ -5,12 +5,6 @@
     <title>Campus Map</title>
     <!--Get the jQuery library-->
     <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <!-- Get the leaflet.js library and stylesheet -->
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-    <!-- Get the mapbox.js library and stylesheet -->
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
     <!--Get the bootstrap library and stylesheet-->
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <script src="js/bootstrap.min.js"></script>
@@ -34,12 +28,28 @@
                             <span class="glyphicon glyphicon-map-marker"></span>
                             <span class="caret"></span>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Visitor's Center</a></li>
-                            <li><a href="#">Fitness Center</a></li>
-                            <li><a href="#">Dining</a></li>
-                            <li><a href="#">Services</a></li>
-                            <li><a href="#">Parking</a></li>
+                        <!--<ul class="dropdown-menu">-->
+                            <!--<li><a href="#">Visitor's Center</a></li>-->
+                            <!--<li><a href="#">Fitness Center</a></li>-->
+                            <!--<li><a href="#">Dining</a></li>-->
+                            <!--<li><a href="#">Services</a></li>-->
+                            <!--<li><a href="#">Parking</a></li>-->
+                        <!--</ul>-->
+                        <ul class="dropdown-menu checkbox" onchange="filterMarkers(this.value);">
+                            <li><label><input type="checkbox" value="visitor">
+                                Visitor's Center</label></li>
+                            <li role="separator" class="divider"></li>
+                            <li><label><input type="checkbox" value="fitness">
+                                Fitness Center</label></li>
+                            <li role="separator" class="divider"></li>
+                            <li><label><input type="checkbox" value="dining">
+                                Dining</label></li>
+                            <li role="separator" class="divider"></li>
+                            <li><label><input type="checkbox" value="services">
+                                Services</label></li>
+                            <li role="separator" class="divider"></li>
+                            <li><label><input type="checkbox" value="parking">
+                                Parking</label></li>
                         </ul>
                     </li>
                 </ul>

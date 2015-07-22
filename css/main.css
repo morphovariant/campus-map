@@ -8,6 +8,10 @@ li.input-group {
     width: 225px;
 }
 
+.navbar-nav>li>.dropdown-menu {
+    padding: 15px;
+}
+
 input.form-control, .input-group .form-control {
     width: 150px;
 }
@@ -29,6 +33,7 @@ body {
 h3 {
     font-family: 'Open Sans', "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-weight: 300;
+    font-size: 18px;
     margin-top: 10px;
 }
 
@@ -36,7 +41,9 @@ h4 {
     font-family: 'Open Sans', "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-weight: 400;
     font-size: 15px;
-    margin-top: 15px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: #ccc 1px solid;
 }
 
 /* Small devices (tablets, 768px and up) */
